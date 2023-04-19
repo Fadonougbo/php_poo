@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+* a {
+  text-decoration: none;
+}
+* li {
+  list-style: none;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+header {
+  background: #000;
+  color: #fff;
+  height: 5rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+}
+header nav {
+  /*border:solid 1px tomato;*/
+  padding: 0.6rem;
+}
+header a {
+  color: #fff;
+  font-size: 1.7rem;
+  padding: 0.7rem;
+  text-decoration: underline;
+  text-decoration-color: tomato;
+  text-decoration-style: wavy;
+}
+
+main div h1 {
+  font-size: 4rem;
+  text-align: center;
+}
+main #paginateLinks {
+  margin: 1.8rem 3.5rem;
+}
+main #paginateLinks button {
+  border: none;
+  background: #000;
+}
+main #paginateLinks button.activePage {
+  background: royalblue;
+}
+main #paginateLinks button a {
+  display: inline-block;
+  color: #fff;
+  padding: 0.8rem;
+}
+
+#container {
+  padding: 2rem;
+}
+#container div {
+  margin: 1.5rem 0;
+}
+#container div h2 {
+  font-size: 2rem;
+}
+#container .card {
+  margin: 3rem 0;
+  padding: 1rem;
+}
+#container .content_card p {
+  font-size: 1.8rem;
+  text-align: justify;
+}
+#container .content_card a {
+  display: inline-block;
+  margin: 0.5rem 0;
+  font-size: 1.4rem;
+  color: #fff;
+  background: #000;
+  padding: 0.5rem;
+}
+
+/*# sourceMappingURL=home.css.map */

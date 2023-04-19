@@ -1,0 +1,27 @@
+
+header 
+{
+	background: #000;
+	color:#fff;
+	height: 5rem;
+	padding: 2rem;
+	display: flex;
+	align-items: center;
+
+	nav 
+	{
+		/*border:solid 1px tomato;*/
+		padding:0.6rem;
+	}
+
+	a 
+	{
+		color:#fff;
+		font-size: 1.7rem;
+		padding: 0.7rem;
+		text-decoration:underline;
+		text-decoration-color: tomato;
+		text-decoration-style: wavy;
+
+	}
+}

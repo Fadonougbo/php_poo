@@ -1,0 +1,76 @@
+
+main 
+{
+	div h1 
+	{
+		font-size:4rem;
+		text-align: center;
+	}
+
+	#paginateLinks
+	{
+		margin:1.8rem 3.5rem ;
+
+		button 
+		{
+			border:none;
+			background:#000;
+
+			&.activePage
+			{
+				background: royalblue;
+			}
+
+			a 
+			{
+			  display:inline-block;
+			  color:#fff;
+			  padding:0.8rem;
+			}
+			
+		}
+	}
+}
+
+#container 
+{
+	padding: 2rem;
+
+	div
+	{
+		margin: 1.5rem 0;
+	}
+
+	div h2 
+	{
+		font-size:2rem;
+	}
+
+	.card
+	{
+		margin:3rem 0;
+		padding: 1rem;
+	}
+
+	.content_card 
+	{
+	
+		p 
+		{
+			font-size: 1.8rem;
+		   text-align: justify;
+		}
+		
+		a 
+		{
+			display:inline-block;
+			margin: 0.5rem 0;
+			font-size:1.4rem;
+			color: #fff;
+			background: #000;
+			padding: 0.5rem;
+		}
+	}
+
+
+}
