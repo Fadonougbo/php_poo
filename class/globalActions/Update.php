@@ -10,12 +10,10 @@ use Utils\router\Router;
 use Utils\validation\FormValidator;
 use \PDO;
 
-class Update 
+class Update extends GlobaleAction
 {
 
 	protected string $tableName;
-
-	protected PDO $pdo;
 
 	protected string $baseUrl;
 
@@ -29,9 +27,11 @@ class Update
 
 	protected array $messageList;
 
-	public function __construct(private Router $router,public SessionInterface $session)
+	public function __construct(private Router $router,public PDO $pdo,public SessionInterface $session)
 	{
 		$this->router->map("GET|POST",$this->baseUrl,[$this,"index"],$this->urlName);
+
+		parent::__construct($pdo);
 	}
 
 	protected function update(ServerRequestInterface $ServerRequest,$post,?array $valideCategorieIdList=null):bool
@@ -111,7 +111,7 @@ class Update
 				$this->pdo->beginTransaction();
 
 				$updateElement=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys);
-				$updateCategorieLiaisons=$this->updateCategorie($id,$parsedBody["categories_lists"],$valideCategorieIdList);
+				$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$parsedBody["categories_lists"],$valideCategorieIdList);
 
 				$this->pdo->commit();
 
@@ -127,27 +127,9 @@ class Update
 
 	}
 
-	/**
-	 * Recupère des informations l'element courrant
-	 * @return [type] [description]
-	 */
-	public function fetchCurrentPost(int|string $id)
-	{
-		if (is_string($id))
-		{
-		   $id=(int)$id;
-		}
-		$query=$this->pdo->prepare("SELECT * FROM {$this->tableName} WHERE id=:id");
-
-		$query->execute(["id"=>(int)$id]);
-
-		return $query->fetch();
-	}
-
-
 
 	/**
-	 * update de l'element
+	 * update de l'element 
 	 * @param  int    $id             [description]
 	 * @param  array  $parsedBody     [description]
 	 * @param  array  $validArrayKeys [description]
@@ -156,6 +138,15 @@ class Update
 	private function updateElement(int $id,array $parsedBody,array $validArrayKeys):bool
 	{
 		$params_purged=Helper::purgeArray($parsedBody,$validArrayKeys,true);
+
+		$slugExist=parent::slugExistVerification($this->tableName,$params_purged['slug'],$id);
+
+		if ($slugExist)
+		{
+			$this->session->setSession("invalideForm",$this->messageList["slugExist"]);
+
+			return false;
+		}
 
 		$sqlEchapString=Helper::generateUpdateEchapString(array_keys($params_purged));
 
@@ -189,7 +180,7 @@ class Update
 	 * @param  array  $validArrayKeys la list de tous les id des categories
 	 * @return bool                [description]
 	 */
-	private function updateCategorie(int $id,array $validArrayKeys ):bool
+	private function updateCategorie_article_relation(int $id,array $validArrayKeys ):bool
 	{
 		$id=(int)$id;
 

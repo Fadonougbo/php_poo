@@ -37,7 +37,8 @@ class UpdatePostModule extends Update
 		"success"=>"L'article à bien été modifié",
 		"no_update"=>"Article non modifié",
 		"invalideForm"=>"Veillez corriger vos erreurs",
-		"invalideCategorieSelection"=>"Veillez sélectionné une categorie valide"
+		"invalideCategorieSelection"=>"Veillez sélectionné une categorie valide",
+		"slugExist"=>"Ce slug exist déja"
 	];
 
 
@@ -50,7 +51,7 @@ class UpdatePostModule extends Update
 		public RelationCategoriePost $relationCategoriePost
 	)
 	{
-		parent::__construct($router,$session);
+		parent::__construct($router,$pdo,$session);
 
 		$match=$this->router->match();
 
@@ -76,7 +77,7 @@ class UpdatePostModule extends Update
 		$paginatePosition=!is_int($pos)?1:$pos;
 
 
-		$post=$this->fetchCurrentPost($this->id);
+		$post=parent::fetchCurrentElement($this->tableName,$this->id);
 
 		if (!$post)
 		{

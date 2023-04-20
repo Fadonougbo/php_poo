@@ -26,7 +26,8 @@ class CreatePostModule extends Create
 		"success"=>"L'article a bien été créé",
 		"no_create"=>"L'article n'a pas été créé",
 		"invalideForm"=>"Veillez corriger vos erreurs ",
-		"invalideCategorie"=>"Veillez selectionné une categorie valide"
+		"invalideCategorie"=>"Veillez selectionné une categorie valide",
+		"slugExist"=>"Ce slug exist déja"
 	];
 
 	protected $validationStatus=null;

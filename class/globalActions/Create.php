@@ -8,7 +8,7 @@ use Utils\Helper;
 use Utils\validation\FormValidator;
 use \PDO;
 
-class Create 
+class Create extends GlobaleAction
 {
 
 	protected string $tableName;
@@ -29,7 +29,7 @@ class Create
 		protected SessionInterface $session
 	)
 	{
-		
+		parent::__construct($pdo);
 	}
 
 	protected function create(ServerRequestInterface $ServerRequest,?array $valideCategorieIdList=null):bool
@@ -117,6 +117,14 @@ class Create
 			$params_purged["updated_at"]=date("Y-m-d H:i:s");
 		}
 
+		$slugExist=parent::slugExistVerification($this->tableName,$params_purged['slug']);
+
+		if ($slugExist)
+		{
+			$this->session->setSession("invalideForm",$this->message["slugExist"]);
+
+			return false;
+		}
 		
 		$sqlEchapString=Helper::generateInsertEchapString(array_keys($params_purged));
 

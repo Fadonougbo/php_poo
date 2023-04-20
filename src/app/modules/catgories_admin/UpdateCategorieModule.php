@@ -34,7 +34,8 @@ class UpdateCategorieModule extends Update
 	protected array $messageList=[
 		"success"=>"La categorie à bien été modifié",
 		"no_update"=>"categorie non modifié",
-		"invalideForm"=>"Veillez corriger vos erreurs"
+		"invalideForm"=>"Veillez corriger vos erreurs",
+		"slugExist"=>"Ce slug Exist déja"
 	];
 
 	public function __construct(
@@ -46,7 +47,7 @@ class UpdateCategorieModule extends Update
 	)
 	{
 
-		parent::__construct($router,$session);
+		parent::__construct($router,$pdo,$session);
 
 		$match=$this->router->match();
 
@@ -72,7 +73,7 @@ class UpdateCategorieModule extends Update
 		$paginatePosition=!is_int($pos)?1:$pos;
 
 
-		$post=$this->fetchCurrentPost($this->id);
+		$post=parent::fetchCurrentElement($this->tableName,$this->id);
 
 		if (!$post)
 		{

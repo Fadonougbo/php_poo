@@ -23,7 +23,8 @@ class CreateCategorieModule extends Create
 	protected array $message=[
 		"success"=>"la categorie à bien été créé",
 		"no_create"=>"Categorie non créé",
-		"invalideForm"=>"Veillez corriger vos erreurs"
+		"invalideForm"=>"Veillez corriger vos erreurs",
+		"slugExist"=>"Ce slug exist déja"
 	];
 
 	protected $validationStatus=null;
