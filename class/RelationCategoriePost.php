@@ -106,6 +106,12 @@ class RelationCategoriePost
         return $idList;
     }
 
+    /**
+     * Recupère les nom des categorie lié a un article
+     * @param  int    $currentPostId        [description]
+     * @param  array  $currentCategorieInfo [description]
+     * @return [type]                       [description]
+     */
     public function getCurrentCategorieName(int $currentPostId,array $currentCategorieInfo):array
     {
     	$currentPostId=(int)$currentPostId;

@@ -1,31 +1,17 @@
 <?php 
 namespace App\modules;
 
-use GuzzleHttp\Psr7\ServerRequest;
 use PDO;
 use Psr\Http\Message\ResponseInterface;
-use Utils\globalActions\PostsPaginate;
+use Psr\Http\Message\ServerRequestInterface;
+use Utils\globalActions\Read;
 use Utils\modele\Post;
+use Utils\PaginateElements;
 use Utils\render\Render;
 use Utils\router\Router;
 
-class BlogModule extends PostsPaginate
+class BlogModule extends Read
 {
-
-    protected string $tableName="posts";
-
-    protected string $orderBy="created_at" ;
-
-    protected string $dbClass=Post::class ;
-
-    protected string $baseUrl="/";
-
-
-    /**
-     * Nombre d'elements par page
-     * @var integer
-     */
-    protected int $limit=7;
 
     public function __construct(
             private Router $router,
@@ -33,20 +19,37 @@ class BlogModule extends PostsPaginate
             public PDO $pdo
     )
     {
-
-        parent::__construct($pdo,ServerRequest::fromGlobals());
         
         $this->router->map("GET","/",[$this,"home"],"blog_home");
+
+        parent::__construct($pdo);
     }
 
-    public function home():string|ResponseInterface
+    public function home(ServerRequestInterface $ServerRequest):string|ResponseInterface
     {
-      
-        $posts=$this->getPosts();
+        $info=[
 
-        $links=$this->getLinks();
+            "limit"=>7,
+            "table"=>"posts",
+            "baseUrl"=>$this->router->generate("blog_home"),
+            "orderBy"=>"created_at",
 
-        return $this->render->show("homeViews/home",parameter:[ "posts"=>$posts,"paginateLinks"=>$links]);
+        ];
+
+        $paginateElements=new PaginateElements($this->pdo,$ServerRequest,$info);
+
+        $posts=$paginateElements->fectchPaginatePost(Post::class);
+
+        $links=$paginateElements->getLinks();
+
+        //Recupère les categorie lié au article
+        $articleCategorieInfo=parent::getCurrentArticleCategoriesInfo($posts);
+
+        return $this->render->show("homeViews/home",parameter:[ 
+                "posts"=>$posts,
+                "paginateLinks"=>$links,
+                "articleCategorieInfo"=>$articleCategorieInfo
+            ]);
     }
 
 }

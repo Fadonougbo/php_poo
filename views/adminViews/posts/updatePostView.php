@@ -15,7 +15,9 @@ $date=(new DateTime($post->updated_at))->format("Y-m-d H:i");
 ?>
 
 <main>
-
+    <div>
+        <a href="<?= $router->generate("admin_home") ?>">Admin</a>
+    </div>
     <form action="" method="POST">
 
         <?php if (!empty($invalide_fields_message)): ?>

@@ -70,7 +70,20 @@ class Paginate
 	 */
 	public function countElement()
 	{
-		$query=$this->pdo->query("SELECT COUNT(*) AS total FROM {$this->info['table']} ");
+		$query="SELECT COUNT(*) AS total FROM {$this->info['table']} ";
+		$params=[];
+
+		if(isset($this->info["filterCountById"]))
+		{	
+			[$id,$key]=$this->info["filterCountById"];
+
+			$query.=" WHERE $key=:id";
+			$params=["id"=>$id];
+		}
+
+		$query=$this->pdo->prepare($query);
+
+		$query->execute($params);
 
 		return $query->fetch()->total;
 	}
@@ -82,7 +95,7 @@ class Paginate
 	public function isOrigin():bool
 	{
 
-		 return ($this->serverInfo->getUri()->getPath()===$this->info["baseUrl"]) && ( isset($this->queryParams["p"]) ) && ( $this->currentPage==="1" ) ;
+		return ($this->serverInfo->getUri()->getPath()===$this->info["baseUrl"]) && ( isset($this->queryParams["p"]) ) && ( $this->currentPage==="1" ) ;
 	}
 
 	public function invalidePaginateParams():bool
@@ -90,18 +103,6 @@ class Paginate
 		return ($this->currentPage>$this->totalPage)||($this->currentPage<1);
 	}
 
-	public function getUrlList():array
-	{
-
-		 $urlList=[];
-
-		 for ($i=1; $i <=$this->totalPage; $i++)
-		 { 
-		 	$urlList[]="/?p=$i";
-		 }
-
-		 return $urlList;
-	}
 
 	/**
 	 * calcule le offset

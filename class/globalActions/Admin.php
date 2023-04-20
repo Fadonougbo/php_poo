@@ -2,8 +2,6 @@
 
 namespace Utils\globalActions;
 
-use Psr\Http\Message\RequestInterface;
-use Utils\render\Render;
 use Utils\router\Router;
 use \PDO;
 
@@ -11,7 +9,7 @@ use \PDO;
 /**
  * Classe parent pour les parties admin
  */
-class Admin extends PostsPaginate
+class Admin extends GlobaleAction
 {
 
 	protected string $urlName;
@@ -19,15 +17,14 @@ class Admin extends PostsPaginate
 	protected string $baseUrl;
 
 	public function __construct(
-		private Router $router,
-        private Render $render,
-        public PDO $pdo,
-        protected RequestInterface $serverRequest
+		protected Router $router,
+        public PDO $pdo
 	)
 	{
-        parent::__construct($pdo,$serverRequest);
 
         $this->router->map("GET",$this->baseUrl,[$this,"home"],$this->urlName);
+
+        parent::__construct($pdo);
 	}
 
 	

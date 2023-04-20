@@ -18,7 +18,9 @@ $success=$session->getSessionFlash("success");
     <div>
        <h1> La list des articles</h1> 
     </div>
-
+     <div>
+        <a href="<?= $router->generate("admin_categories_home") ?>">Categorie Admin</a>
+    </div>
 	<?php if(!empty($success)): ?>
 
 		<h2><?= $success; ?></h2>
@@ -63,14 +65,11 @@ $success=$session->getSessionFlash("success");
                                     <?php foreach ($categories_post[$value->id] as $v): ?>
                                           <li><?= $v["name"] ?></li>
                                     <?php endforeach ?>
-
-                                <?php else: ?>
-                                    <li>Vide</li>
                                 <?php endif ?>
                             </ol>
                         </td>
     					<td>
-                            <a href="<?= $router->generate("update_post_home",[ "id"=>$value->id]); ?>?pos=<?= $_GET["p"]??1; ?>">Editer</a>               
+                            <a href="<?= $router->generate("update_post_home",["slug"=>$value->slug,"id"=>$value->id]); ?>?pos=<?= $_GET["p"]??1; ?>">Editer</a>               
                         </td>
                         <td>
                             <form action="<?= $router->generate("delete_post_home",[ "id"=>$value->id ]); ?>?pos=<?= $_GET["p"]??1; ?>" method="POST" >

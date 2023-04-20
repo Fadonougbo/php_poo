@@ -79,14 +79,15 @@ class Helper
 
     /**
      * Redirection en cas d'utilisation d'un mauvais slug
-     * @param  array      $slugInfo [normalSlug,userSlug,id]
+     * @param string routeName 
+     * @param  array      $slugInfo 
      * @param  AltoRouter $router   
      * @return ResponseInterface
      */
-    public static function badSlugRedirect(array $slugInfo,Router $router):ResponseInterface
+    public static function badSlugRedirect($routeName,array $slugInfo,Router $router):ResponseInterface
     {
 
-        $normalSlug=$router->generate("blog_post",["id"=>$slugInfo["id"],"slug"=>$slugInfo["normalSlug"] ] ) ;
+        $normalSlug=$router->generate($routeName,$slugInfo) ;
 
         return new Response(301,["location"=>$normalSlug]);
 

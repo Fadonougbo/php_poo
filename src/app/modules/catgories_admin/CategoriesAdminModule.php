@@ -9,43 +9,49 @@ use Utils\modele\Categorie;
 use Utils\render\Render;
 use Utils\router\Router;
 use \PDO;
+use Psr\Http\Message\ServerRequestInterface;
+use Utils\PaginateElements;
 
 class CategoriesAdminModule extends Admin
 {
-	protected string $tableName="categories";
-
-    protected string $orderBy="id" ;
-
-    protected string $dbClass=Categorie::class ;
 
     protected string $baseUrl="/admin/categories";
 
-    protected string $urlName="admin_categoies_home";
-
-     /**
-     * Nombre d'elements par page
-     * @var integer
-     */
-    protected int $limit=10;
+    protected string $urlName="admin_categories_home";
 
 	public function __construct(
-		private Router $router,
+		protected Router $router,
         private Render $render,
         public PDO $pdo,
         protected RequestInterface $serverRequest
 	)
 	{
-        parent::__construct($router,$render,$pdo,$serverRequest);
+        parent::__construct($router,$pdo);
 	}
 
 
-	public function home():string|ResponseInterface
+	public function home(ServerRequestInterface $ServerRequest):string|ResponseInterface
 	{
-		$posts=$this->getPosts();
 
-        $links=$this->getLinks();
+		$info=[
 
-		return $this->render->show("adminViews/adminCategoriesView",parameter:[ "posts"=>$posts,"paginateLinks"=>$links]);
+            "limit"=>10,
+            "table"=>"categories",
+            "baseUrl"=>$this->baseUrl,
+            "orderBy"=>"id"
+
+        ];
+
+        $paginateElements=new PaginateElements($this->pdo,$ServerRequest,$info);
+
+		$categories=$paginateElements->fectchPaginatePost(Categorie::class);
+
+        $links=$paginateElements->getLinks();
+
+		return $this->render->show("adminViews/adminCategoriesView",parameter:[ 
+			"categories"=>$categories,
+			"paginateLinks"=>$links
+		]);
 	}
 
 }

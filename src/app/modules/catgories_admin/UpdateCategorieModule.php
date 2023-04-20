@@ -21,7 +21,7 @@ class UpdateCategorieModule extends Update
 
 	protected string $tableName="categories";
 
-	protected string $baseUrl="/admin/update/categorie_[i:id]";
+	protected string $baseUrl="/admin/update/category/[*:slug]_[i:id]";
 
 	protected string $urlName="update_categorie_home";
 

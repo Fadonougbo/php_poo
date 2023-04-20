@@ -23,7 +23,7 @@ class UpdatePostModule extends Update
 
 	protected string $tableName="posts";
 
-	protected string $baseUrl="/admin/update/post_[i:id]";
+	protected string $baseUrl="/admin/update/post/[*:slug]_[i:id]";
 
 	protected string $urlName="update_post_home";
 

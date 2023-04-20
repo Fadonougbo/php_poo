@@ -2,14 +2,14 @@
 
 namespace App\modules;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Utils\render\Render;
 use \PDO;
 use Psr\Http\Message\ResponseInterface;
+use Utils\globalActions\Read;
 use Utils\Helper;
 use Utils\router\Router;
 
-class PostShowModule
+class PostShowModule extends Read
 {
 
 	private $params;
@@ -20,10 +20,12 @@ class PostShowModule
 
 		private Router $router,
         private Render $render,
-        private PDO $pdo
+        public PDO $pdo
 	)
 	{
 		$router->map("GET","/show/[*:slug]_[i:id]",[$this,"showPost"],'blog_post');
+
+		parent::__construct($pdo);
 
 		if (isset($this->router->match()["params"]))
 		{
@@ -42,10 +44,10 @@ class PostShowModule
 		
 	}
 
-	public function showPost(ServerRequestInterface $serverInfo):string|ResponseInterface
+	public function showPost():string|ResponseInterface
 	{	
 
-		$post=$this->fetchCurrentPost();
+		$post=parent::fetchCurrentElement("posts",$this->id);
 
 		if (!$post)
 		{
@@ -54,20 +56,15 @@ class PostShowModule
 
 		if ($post->slug!==$this->slug)
 		{
-			 return Helper::badSlugRedirect( [ "normalSlug"=>$post->slug, "id"=>$this->id ] , $this->router);
+			 return Helper::badSlugRedirect('blog_post',[ "slug"=>$post->slug, "id"=>$this->id ], $this->router);
 		}
 
-		return $this->render->show("postsView/post",parameter:["post"=>$post]);
+		$articleCategorieInfo=parent::getCurrentArticleCategoriesInfo($post);
+
+
+		return $this->render->show("postsView/post",parameter:["post"=>$post,"articleCategorieInfo"=>$articleCategorieInfo]);
 	}
 
-
-	public function fetchCurrentPost()
-	{
-		$query=$this->pdo->prepare("SELECT * FROM posts WHERE id=:id");
-		$query->execute(["id"=>$this->id]);
-
-		return $query->fetch();
-	}
 }
 
  ?>

@@ -3,6 +3,7 @@ require "../vendor/autoload.php";
 
 use App\App;
 use App\modules\AdminModule;
+use App\modules\BlogFilterByCategorieModule;
 use App\modules\BlogModule;
 use App\modules\CreatePostModule;
 use App\modules\DeletePostModule;
@@ -53,6 +54,8 @@ $app = new App($container,
 
     /*Home module*/
     BlogModule::class,
+    
+    BlogFilterByCategorieModule::class
 
 ]
 );

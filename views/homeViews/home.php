@@ -21,8 +21,25 @@ $render->show("header",parameter:[
         <?php foreach ($posts as $value): ?>
 
             <div class="card" >
+                <?php 
+                    $categorieLiaison=$articleCategorieInfo[$value->id]??[];
+                 ?>
 
-                <h2><?= $value->name; ?> <em> Posté le <?= $value->created_at; ?></em> </h2>
+                 <div>
+                    <?php if (!empty($categorieLiaison)): ?>
+
+                        <?php foreach ($categorieLiaison as $key => $cate): ?>
+                           <mark>
+                                <a href="<?= $router->generate("blog_filterByCategory",["slug"=>$cate['slug'],"id"=>$cate["id"]]) ?>">
+                                    <?= $cate["name"] ?>
+                                </a>
+                            </mark>  
+                        <?php endforeach ?>
+                    <?php endif ?>
+                 </div>
+                <h2>
+                    <?= $value->name; ?> <em> Posté le <?= $value->created_at; ?></em> 
+                </h2>
 
                 <div class="content_card" >
 

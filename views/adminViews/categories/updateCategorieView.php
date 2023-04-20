@@ -14,7 +14,9 @@ $invalide_fields_message=$session->getSessionFlash("invalideForm");
 ?>
 
 <main>
-
+    <div>
+        <a href="<?= $router->generate("admin_categories_home") ?>">Admin</a>
+    </div>
     <form action="" method="POST">
 
         <?php if (!empty($invalide_fields_message)): ?>
