@@ -27,6 +27,7 @@ class Update extends GlobaleAction
 
 	protected array $messageList;
 
+
 	public function __construct(private Router $router,public PDO $pdo,public SessionInterface $session)
 	{
 		$this->router->map("GET|POST",$this->baseUrl,[$this,"index"],$this->urlName);
@@ -101,7 +102,7 @@ class Update extends GlobaleAction
 			//Cas de modification d'un article avec presence de categorie
 
 			/**
-			 * Verifie si l'utilisateur a fait un selection dans les categorie disponible
+			 * Verifie si l'utilisateur a fait une selection dans les categories disponibles
 			 * @var [type]
 			 */
 			$valideArray=Helper::purgeArray($parsedBody["categories_lists"],$valideCategorieIdList);

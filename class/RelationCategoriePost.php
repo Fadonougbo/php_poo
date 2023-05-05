@@ -12,7 +12,7 @@ class RelationCategoriePost
 	}
 
 	/**
-     * Recupére l'id des elément present sur la page
+     * Recupére l'id des eléments presents sur la page
      * @param  mixed  $posts [description]
      * @return [type]        [description]
      */
@@ -73,7 +73,10 @@ class RelationCategoriePost
         
     }
 
-
+    /**
+     * Recupère la list de toutes les catégories
+     * @return [type] [description]
+     */
     public function getAllCategoriesList():array
     {
     	$sqlReq="SELECT * FROM categories";
@@ -87,6 +90,10 @@ class RelationCategoriePost
     	return $categories;
     }
 
+    /**
+     * Recupère la liste de l'id de toutes les ctégories 
+     * @return [type] [description]
+     */
     public function getAllCategoriesId()
     {
         $sqlReq="SELECT id FROM categories";
@@ -107,7 +114,7 @@ class RelationCategoriePost
     }
 
     /**
-     * Recupère les nom des categorie lié a un article
+     * Recupère les noms des categories liées a un article
      * @param  int    $currentPostId        [description]
      * @param  array  $currentCategorieInfo [description]
      * @return [type]                       [description]
@@ -133,6 +140,12 @@ class RelationCategoriePost
     	return $nameList;
     }
 
+    /**
+     * Recupère la liste des id liés a une categorie
+     * @param  int    $currentPostId        [description]
+     * @param  array  $currentCategorieInfo [description]
+     * @return [type]                       [description]
+     */
     public function getCurrentCategorieId(int $currentPostId,array $currentCategorieInfo)
     {
     	$currentPostId=(int)$currentPostId;

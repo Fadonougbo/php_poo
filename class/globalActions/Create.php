@@ -106,7 +106,7 @@ class Create extends GlobaleAction
 	{
 		
 		/**
-		 * Verifie si params possede les clés ["name","slug","content"]
+		 * Verifie si params possede les clées ["name","slug","content"]
 		 * @var [type]
 		 */
 		$params_purged=Helper::purgeArray($parsedBody,$validKeys,true);
@@ -139,7 +139,7 @@ class Create extends GlobaleAction
 	/**
 	 * Ajout de liaison post/categorie
 	 * @param int   $id          post id
-	 * @param array $valideArray list des id des categories selèctioné par l'utilisateur
+	 * @param array $valideArray list des id des categories selèctionées par l'utilisateur
 	 */
 	private function addCategorie(int $id,array $valideArray):bool
 	{
@@ -164,10 +164,10 @@ class Create extends GlobaleAction
 
 
 	/**
-	 * Insert post in DB width categorie Liaison
+	 * Insert post in DB width categories Liaisons
 	 * @param  ServerRequestInterface $ServerRequest 
 	 * @param  array  $categorieIdLIst list des id envoyés par l'utilisateur
-	 * @param  array   $valideCategorieIdList list des id des categories present dans la DB 
+	 * @param  array   $valideCategorieIdList list des id des categories présent dans la DB 
 	 * @return bool
 	 */
 	private function createPostWithCategorie(ServerRequestInterface $ServerRequest,array $categorieIdLIst,array $valideCategorieIdList):bool

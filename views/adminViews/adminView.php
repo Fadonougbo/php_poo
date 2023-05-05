@@ -69,10 +69,10 @@ $success=$session->getSessionFlash("success");
                             </ol>
                         </td>
     					<td>
-                            <a href="<?= $router->generate("update_post_home",["slug"=>$value->slug,"id"=>$value->id]); ?>?pos=<?= $_GET["p"]??1; ?>">Editer</a>               
+                            <a href="<?= $router->generate("update_post_home",["slug"=>$value->slug,"id"=>$value->id]); ?>?pos=<?= isset($_GET["p"])?htmlentities($_GET["p"]):1; ?>">Editer</a>               
                         </td>
                         <td>
-                            <form action="<?= $router->generate("delete_post_home",[ "id"=>$value->id ]); ?>?pos=<?= $_GET["p"]??1; ?>" method="POST" >
+                            <form action="<?= $router->generate("delete_post_home",[ "id"=>$value->id ]); ?>?pos=<?= isset($_GET["p"])?htmlentities($_GET["p"]):1; ?>" method="POST" >
                                 <button type="submit" >Supprimer</button>
                             </form>             
                         </td>

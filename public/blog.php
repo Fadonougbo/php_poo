@@ -2,12 +2,13 @@
 
 require "../vendor/autoload.php";
 
-$x=array_reduce(["a","b","c"],function($acc,$el){
 
-	return $acc." ,$el";
+$arr1=["name"=>"gaut","age"=>12,"tel"=>109378];
+$arr2=["name","tel"];
 
-}," s");
+$arr1=array_flip($arr1);
+
+$array=array_flip( array_intersect($arr1,$arr2) ) ;
 
 
-var_dump($x);
 ?>

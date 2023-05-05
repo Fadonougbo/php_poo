@@ -79,6 +79,7 @@ class PaginateElements
 
     /**
      * Recupère les articles liés a une categorie
+     * @param int $categoryId 
      * @param  string|null $fetchClass [description]
      * @return [type]                  [description]
      */
