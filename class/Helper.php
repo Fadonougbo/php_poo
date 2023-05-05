@@ -64,7 +64,12 @@ class Helper
         return implode(",",$new_arr);
     }
 
-    public static function urlRedirect(string $uri)
+    /**
+     * slash redirection
+     * @param  string $uri [description]
+     * @return [type]      [description]
+     */
+    public static function SlashUrlRedirect(string $uri):?ResponseInterface
     {
 
         if($uri[-1]==="/" && $uri!=="/")
@@ -72,9 +77,11 @@ class Helper
             $newUri=substr($uri,0,-1);
             $response=(new Response())
                       ->withStatus(301)
-                      ->withHeader("location",$newUri);
+                      ->withHeader("Location",$newUri);
             return $response;
         }
+
+        return null;
     }
 
     /**

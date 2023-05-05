@@ -1,23 +1,31 @@
 <?php
 namespace App;
 
+
 use GuzzleHttp\Psr7\Response;
 use Interfaces\SessionInterface;
 use Psr\Container\ContainerInterface;
-use Utils\Helper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Utils\render\Render;
 use Utils\router\Router;
 use Utils\validation\FormErrorMessage;
 
-class App
+class App implements RequestHandlerInterface
 {   
     /**
      * Summary of modulesInstance
      * @var array module list
      */
-    private array $modulesInstance=[];
+    //private array $modulesInstance=[];
+    
+    private array $middlewareList=[];
+
+    private int $index=0;
+
+    private Response $response;
 
     private Router $router;
 
@@ -47,49 +55,81 @@ class App
                                 ]);
 
         /**
-         * initialise les module
+         * initialise les modules et sous modules
          */
         $this->initModule();
 
     }
 
     /**
-     * Instancie les modules
+     * Instancie les modules et les sous modules
+     * 
      * @return void init the sites modules
      */
-    private function initModule()
+    private function initModule():void
     {
         foreach($this->moduleList as $module)
         {   
-            $this->modulesInstance[]=$this->container->get($module);
+            $moduleInstance=$this->container->get($module);
+
+            if(!empty($moduleInstance->subModuleList))
+            {
+                foreach($moduleInstance->subModuleList as $subModule)
+                {
+                    $this->container->get($subModule);
+                }
+            }
+
         }
+
+    }
+
+    /**
+     * Add middleware
+     * @param  MiddlewareInterface $middleware [description]
+     * @return self                       [description]
+     */
+    public function pipe(string $middleware):self
+    {
+        $this->middlewareList[]=$middleware;
+
+        return $this;
+    }
+
+    /**
+     * Renvoie un middleware
+     * @return [type] [description]
+     */
+    private function getMiddleware():?MiddlewareInterface
+    {
+        if(isset($this->middlewareList[$this->index]))
+        { 
+            return $this->container->get($this->middlewareList[$this->index]);
+        }
+
+
+        return null;
     }
 
 
-    public function run(ServerRequestInterface $serverInfo):ResponseInterface
-    {   
-        
-        /* Redirect */
-        $uri=$serverInfo->getUri()->getPath();
-        
-        Helper::urlRedirect($uri);
+    /**
+     * Handles a request and produces a response.
+     *
+     * May call other collaborating code to generate the response.
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $middleware=$this->getMiddleware();
 
-
-        $match=$this->router->match();
-
-        if (!$match)
+        if(!empty($middleware))
         {
-           return new Response(404,[],"<h1>Error 404</h1>");
+            $this->index++;
+            $this->response=$middleware->process($request,$this);
+
         }
 
-        $response=call_user_func_array($match['target'],[$serverInfo]);
-
-        if (!is_string($response))
-        {
-            return $response;
-        }
-
-        return new Response(200,[],$response);
+        return $this->response;
+        
     }
 
 

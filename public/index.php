@@ -5,16 +5,14 @@ use App\App;
 use App\modules\AdminModule;
 use App\modules\BlogFilterByCategorieModule;
 use App\modules\BlogModule;
-use App\modules\CreatePostModule;
-use App\modules\DeletePostModule;
 use App\modules\PostShowModule;
-use App\modules\UpdatePostModule;
 use App\modules\catgories_admin\CategoriesAdminModule;
-use App\modules\catgories_admin\CreateCategorieModule;
-use App\modules\catgories_admin\DeleteCategorieModule;
-use App\modules\catgories_admin\UpdateCategorieModule;
 use DI\ContainerBuilder;
 use GuzzleHttp\Psr7\ServerRequest;
+use Utils\middlewares\NotFoundMiddleware;
+use Utils\middlewares\RunMiddleware;
+use Utils\middlewares\SlashUrlRedirect;
+
 use function Http\Response\send;
 
 try 
@@ -33,18 +31,8 @@ $container=$builder->build();
 /*Mise en place des modules*/
 $app = new App($container,
 [   
-    /*Admin post crud module*/
-    UpdatePostModule::class,
-    CreatePostModule::class,
-    DeletePostModule::class,
-
     /*Admin module*/
     AdminModule::class,
-
-    /*Categorie crud module*/
-    UpdateCategorieModule::class,
-    CreateCategorieModule::class,
-    DeleteCategorieModule::class,
 
     /*Categorie admin module*/
     CategoriesAdminModule::class,
@@ -55,15 +43,24 @@ $app = new App($container,
     /*Home module*/
     BlogModule::class,
     
+    /*Articles list filter by categorie */
     BlogFilterByCategorieModule::class
 
 ]
 );
 
 /*Recuperation de la response*/
-$response=$app->run(ServerRequest::fromGlobals());
+
+$req=ServerRequest::fromGlobals();
+
+$app=$app->pipe(SlashUrlRedirect::class)
+         ->pipe(RunMiddleware::class)
+         ->pipe(NotFoundMiddleware::class)
+         ;
 
 /*envoie de la response*/
+$response=$app->handle($req);
+
 send($response);
 
 

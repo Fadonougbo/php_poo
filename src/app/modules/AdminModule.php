@@ -20,6 +20,12 @@ class AdminModule extends Admin
 
     protected string $baseUrl="/admin";
 
+    public array $subModuleList=[
+             UpdatePostModule::class,
+            CreatePostModule::class,
+            DeletePostModule::class,
+    ];
+
 
 	public function __construct(
 		protected Router $router,

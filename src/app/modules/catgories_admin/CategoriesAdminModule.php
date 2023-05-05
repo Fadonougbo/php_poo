@@ -19,6 +19,12 @@ class CategoriesAdminModule extends Admin
 
     protected string $urlName="admin_categories_home";
 
+    public array $subModuleList=[
+    	UpdateCategorieModule::class,
+	    CreateCategorieModule::class,
+	    DeleteCategorieModule::class
+    ];
+
 	public function __construct(
 		protected Router $router,
         private Render $render,
