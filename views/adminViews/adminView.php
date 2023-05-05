@@ -5,9 +5,16 @@ $render->show("header",parameter:[
 ])
 ?>
 
-<?php 
+<?php
+
+use Utils\middlewares\CsrfMiddleware;
 
 $success=$session->getSessionFlash("success");
+
+$csrf=new CsrfMiddleware($session);
+
+$tokenInput=$csrf->getCsrfInput();
+
 
 
 
@@ -74,6 +81,7 @@ $success=$session->getSessionFlash("success");
                         <td>
                             <form action="<?= $router->generate("delete_post_home",[ "id"=>$value->id ]); ?>?pos=<?= isset($_GET["p"])?htmlentities($_GET["p"]):1; ?>" method="POST" >
                                 <button type="submit" >Supprimer</button>
+                                <?= $tokenInput; ?>
                             </form>             
                         </td>
     				</tr>

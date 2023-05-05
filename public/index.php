@@ -9,6 +9,7 @@ use App\modules\PostShowModule;
 use App\modules\catgories_admin\CategoriesAdminModule;
 use DI\ContainerBuilder;
 use GuzzleHttp\Psr7\ServerRequest;
+use Utils\middlewares\CsrfMiddleware;
 use Utils\middlewares\NotFoundMiddleware;
 use Utils\middlewares\RunMiddleware;
 use Utils\middlewares\SlashUrlRedirect;
@@ -54,6 +55,7 @@ $app = new App($container,
 $req=ServerRequest::fromGlobals();
 
 $app=$app->pipe(SlashUrlRedirect::class)
+         ->pipe(CsrfMiddleware::class)
          ->pipe(RunMiddleware::class)
          ->pipe(NotFoundMiddleware::class)
          ;

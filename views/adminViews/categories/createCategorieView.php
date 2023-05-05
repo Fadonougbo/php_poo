@@ -6,13 +6,18 @@ $render->show("header",parameter:[
 
 ?>
 
-<?php 
+<?php
+
+use Utils\middlewares\CsrfMiddleware;
 
 $invalide_fields=$validationStatus;
 
 $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
 
+$csrf=new CsrfMiddleware($session);
+
+$tokenInput=$csrf->getCsrfInput();
 ?>
 
 <main>
@@ -51,6 +56,7 @@ $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
         <div>
             <button type="submit" >Enregistré la categorie</button>
+            <?= $tokenInput; ?>
         </div>
 
     </form>    

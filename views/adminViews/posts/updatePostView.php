@@ -6,11 +6,19 @@ $render->show("header",parameter:[
 
 ?>
 
-<?php 
+<?php
+
+use Utils\middlewares\CsrfMiddleware;
+
 $invalide_fields=$validationStatus;
 $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
 $date=(new DateTime($post->updated_at))->format("Y-m-d H:i");
+
+
+$csrf=new CsrfMiddleware($session);
+
+$tokenInput=$csrf->getCsrfInput();
 
 ?>
 
@@ -92,6 +100,7 @@ $date=(new DateTime($post->updated_at))->format("Y-m-d H:i");
 
         <div>
             <button type="submit" >modifier l'article</button>
+            <?= $tokenInput; ?>
         </div>
 
     </form>    

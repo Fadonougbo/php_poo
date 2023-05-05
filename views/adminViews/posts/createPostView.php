@@ -6,13 +6,18 @@ $render->show("header",parameter:[
 
 ?>
 
-<?php 
+<?php
+
+use Utils\middlewares\CsrfMiddleware;
 
 $invalide_fields=$validationStatus;
 
 $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
 
+$csrf=new CsrfMiddleware($session);
+
+$tokenInput=$csrf->getCsrfInput();
 ?>
 
 <main>
@@ -68,6 +73,7 @@ $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
         <div>
             <button type="submit" >Ajouter un article</button>
+            <?= $tokenInput;  ?>
         </div>
 
     </form>    
