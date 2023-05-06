@@ -9,6 +9,7 @@ use Utils\Helper;
 use Utils\router\Router;
 use Utils\validation\FormValidator;
 use \PDO;
+use Utils\upload\Upload;
 
 class Update extends GlobaleAction
 {
@@ -47,6 +48,13 @@ class Update extends GlobaleAction
 			{	
 				//Verification des valeurs entrées
 				$this->validationStatus=$this->formIsValid($parsedBody);
+
+				/*$file=$ServerRequest->getUploadedFiles();
+
+
+				$u=new Upload(dirname(__DIR__,2).DIRECTORY_SEPARATOR."public/pic");
+
+				$u->moveFile($file["image"]);*/
 
 				if (!is_array($this->validationStatus))
 				{

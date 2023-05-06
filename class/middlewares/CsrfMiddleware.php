@@ -47,12 +47,17 @@ class CsrfMiddleware implements MiddlewareInterface
 					throw new Exception("Token Csrf absent  ");
 				}
 			}
+			
 		}else 
 		{
 			return $handler->handle($request);
 		}
 	}
 
+	/**
+	 * Génère un token
+	 * @return [type] [description]
+	 */
 	private function getToken()
 	{
 		$token=str_shuffle(uniqid(random_int(0,15)));

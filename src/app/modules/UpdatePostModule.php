@@ -94,12 +94,13 @@ class UpdatePostModule extends Update
 		$categorieIdLIst=$this->relationCategoriePost->getAllCategoriesId();
 
 		$updatePost=parent::update($ServerRequest,$post,$categorieIdLIst);
-		
+
 
 		if ($updatePost)
 		{
 			return (new Response())->withStatus(301)->withHeader("Location","/admin?p=$paginatePosition");
-		}		
+		}
+				
 		return $this->render->show("adminViews/posts/updatePostView",parameter:[
 																"post"=>$post,
 																"categories"=>$categories,
