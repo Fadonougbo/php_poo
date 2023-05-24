@@ -120,7 +120,7 @@ class Update extends GlobaleAction
 				$this->pdo->beginTransaction();
 
 				$updateElement=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys);
-				$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$parsedBody["categories_lists"],$valideCategorieIdList);
+				$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$valideArray);
 
 				$this->pdo->commit();
 
@@ -185,7 +185,6 @@ class Update extends GlobaleAction
 	/**
 	 * Ajout des nouvelles liaisons entre categorie et article
 	 * @param  int    $id             id de l'article
-	 * @param  array  $parsedBodyKey  les valeur(id des categorie) anvoyé par l'utilisateur au niveau de select
 	 * @param  array  $validArrayKeys la list de tous les id des categories
 	 * @return bool                [description]
 	 */

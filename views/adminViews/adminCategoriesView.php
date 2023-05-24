@@ -15,6 +15,11 @@ $csrf=new CsrfMiddleware($session);
 
 $tokenInput=$csrf->getCsrfInput();
 
+/**
+ * @var Router router
+ */
+$r=$router;
+
 ?>
 
 <main>
@@ -59,7 +64,7 @@ $tokenInput=$csrf->getCsrfInput();
     			<?php foreach ($categories as $value): ?>
     				<tr>
     					<td>
-    						<?= $value->name; ?>
+    						<a href="<?= $r->generate("blog_filterByCategory",["slug"=>$value->slug,"id"=>$value->id]) ?>"><?= $value->name; ?></a> 
     					</td>
     					<td>
                             <a href="<?= $router->generate("update_categorie_home",["slug"=>$value->slug,"id"=>$value->id]); ?>?pos=<?= isset($_GET["p"])?htmlentities($_GET["p"]):1; ?>">Editer</a>               
