@@ -49,13 +49,6 @@ class Update extends GlobaleAction
 				//Verification des valeurs entrées
 				$this->validationStatus=$this->formIsValid($parsedBody);
 
-				/*$file=$ServerRequest->getUploadedFiles();
-
-
-				$u=new Upload(dirname(__DIR__,2).DIRECTORY_SEPARATOR."public/pic");
-
-				$u->moveFile($file["image"]);*/
-
 				if (!is_array($this->validationStatus))
 				{
 					
@@ -101,7 +94,7 @@ class Update extends GlobaleAction
 			$this->pdo->beginTransaction();
 
 				$this->deleteOldCategorieLiaison($id);
-				$this->isUpdated=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys);
+				$this->isUpdated=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys,$ServerRequest);
 
 			$this->pdo->commit();
 
@@ -119,7 +112,7 @@ class Update extends GlobaleAction
 			{
 				$this->pdo->beginTransaction();
 
-				$updateElement=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys);
+				$updateElement=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys,$ServerRequest);
 				$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$valideArray);
 
 				$this->pdo->commit();
@@ -144,8 +137,13 @@ class Update extends GlobaleAction
 	 * @param  array  $validArrayKeys [description]
 	 * @return bool                [description]
 	 */
-	private function updateElement(int $id,array $parsedBody,array $validArrayKeys):bool
+	private function updateElement(int $id,array $parsedBody,array $validArrayKeys,?ServerRequestInterface $ServerRequest=null):bool
 	{
+		/***File info */
+		$response=$this->uploadPicInfo($ServerRequest);
+		/********************** */
+
+
 		$params_purged=Helper::purgeArray($parsedBody,$validArrayKeys,true);
 
 		$slugExist=parent::slugExistVerification($this->tableName,$params_purged['slug'],$id);
@@ -158,13 +156,33 @@ class Update extends GlobaleAction
 		}
 
 		$sqlEchapString=Helper::generateUpdateEchapString(array_keys($params_purged));
+		/**
+		 * Ajout de variable pour les images
+		 */
+		$sqlEchapString=$sqlEchapString.",pic=:pic";
 
 		$params_purged["id"]=(int)$id;
+
+		$params_purged["pic"]=$response?$response:'';
 
 		$req=$this->pdo->prepare(" UPDATE {$this->tableName} SET $sqlEchapString WHERE id=:id ");
 
 		return $req->execute($params_purged);
 
+	}
+
+	private function uploadPicInfo(ServerRequestInterface $ServerRequest):bool|string
+	{
+		if(!empty($ServerRequest))
+		{
+			$file=($ServerRequest->getUploadedFiles())["image"];
+
+			$response=(parent::$upload)->moveFile($file);
+
+			return $response?$response:false;
+		}
+		
+		return false;
 	}
 
 	/**

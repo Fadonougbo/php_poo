@@ -98,7 +98,7 @@ class UpdatePostModule extends Update
 
 		if ($updatePost)
 		{
-			return (new Response())->withStatus(301)->withHeader("Location","/admin?p=$paginatePosition");
+			//return (new Response())->withStatus(301)->withHeader("Location","/admin?p=$paginatePosition");
 		}
 				
 		return $this->render->show("adminViews/posts/updatePostView",parameter:[

@@ -7,7 +7,6 @@ use Psr\Http\Message\UploadedFileInterface;
 class Upload
 {
 
-
 	public function __construct(
 		
 		private string $dirPath
@@ -20,19 +19,27 @@ class Upload
 	 * @param  UploadedFileInterface $file [description]
 	 * @return string                      [description]
 	 */
-	public function moveFile(UploadedFileInterface $file):string
+	public function moveFile(UploadedFileInterface $file):string|bool
 	{
-		$filename=$file->getClientFilename();
 
-		if(!is_dir($this->dirPath))
+
+		if($file->getError()!==4)
 		{
-			mkdir($this->dirPath,0777,true);
+			$filename=$file->getClientFilename();
+
+			if(!is_dir($this->dirPath))
+			{
+				mkdir($this->dirPath,0777,true);
+			}
+
+			$target=$this->addSuffix($this->dirPath.DIRECTORY_SEPARATOR.$filename);
+			$file->moveTo($target);
+
+			return pathinfo($target)['basename'];
 		}
 
-		$target=$this->addSuffix($this->dirPath.DIRECTORY_SEPARATOR.$filename);
-		$file->moveTo($target);
-
-		return pathinfo($target)['basename'];
+		return false;
+		
 		
 	}
 

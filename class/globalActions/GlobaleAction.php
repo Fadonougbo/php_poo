@@ -3,13 +3,18 @@
 namespace Utils\globalActions;
 
 use \PDO;
+use Utils\upload\Upload;
 
 class GlobaleAction
 {
+    protected static Upload $upload;
+
 	public function __construct(
 
 		private PDO $pdo
 	){
+
+        self::$upload=new Upload(dirname(__DIR__,2).DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."pic");
 
 	}
 
