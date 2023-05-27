@@ -1,8 +1,8 @@
 <?php
 require "../vendor/autoload.php";
-
 use App\App;
 use App\modules\AdminModule;
+use App\modules\auth\AuthModule;
 use App\modules\BlogFilterByCategorieModule;
 use App\modules\BlogModule;
 use App\modules\PostShowModule;
@@ -15,6 +15,9 @@ use Utils\middlewares\RunMiddleware;
 use Utils\middlewares\SlashUrlRedirect;
 
 use function Http\Response\send;
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 try 
 {
@@ -45,7 +48,11 @@ $app = new App($container,
     BlogModule::class,
     
     /*Articles list filter by categorie */
-    BlogFilterByCategorieModule::class
+    BlogFilterByCategorieModule::class,
+
+    /**Login Module */
+
+    AuthModule::class
 
 ]
 );

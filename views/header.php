@@ -1,3 +1,12 @@
+<?php
+
+use Utils\session\Session;
+
+$session=new Session();
+$user=$session->getSession("userinfo");
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,5 +20,12 @@
     <header>
         <nav>
             <a href="<?= $router->generate("blog_home") ?>">Home</a>
+            <?php if($user): ?>
+                <a href="/admin/categories">Categorie Admin</a>
+                <a href="/admin">Article Admin</a>
+                <form action="/logout" method="POST">
+                    <button type="submit" >deconnection</button>
+                </form>
+            <?php endif; ?>
         </nav>
     </header>

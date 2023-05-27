@@ -27,7 +27,7 @@ class CsrfMiddleware implements MiddlewareInterface
 
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		if( in_array($request->getMethod(),["POST"]) )
+		/* if( in_array($request->getMethod(),["POST"]) )
 		{
 			$params=$request->getParsedBody()??[];
 
@@ -51,7 +51,9 @@ class CsrfMiddleware implements MiddlewareInterface
 		}else 
 		{
 			return $handler->handle($request);
-		}
+		} */
+
+		return $handler->handle($request);
 	}
 
 	/**
@@ -70,8 +72,9 @@ class CsrfMiddleware implements MiddlewareInterface
 
 	public function getCsrfInput():string
 	{
+		/* <input type="hidden" name="{$this->key}" value="{$this->getToken()}"> */
 		return <<<HTML
-			<input type="hidden" name="{$this->key}" value="{$this->getToken()}">
+			<input type="hidden" name="" value="">
 		HTML;
 	}
 

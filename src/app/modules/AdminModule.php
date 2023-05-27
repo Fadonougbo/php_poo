@@ -2,6 +2,8 @@
 
 namespace App\modules;
 
+use GuzzleHttp\Psr7\Response;
+use Interfaces\SessionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Utils\globalActions\Admin;
@@ -21,7 +23,7 @@ class AdminModule extends Admin
     protected string $baseUrl="/admin";
 
     public array $subModuleList=[
-             UpdatePostModule::class,
+            UpdatePostModule::class,
             CreatePostModule::class,
             DeletePostModule::class,
     ];
@@ -32,7 +34,8 @@ class AdminModule extends Admin
         private Render $render,
         public PDO $pdo,
         protected RequestInterface $serverRequest,
-        private RelationCategoriePost $relationCategoriePost
+        private RelationCategoriePost $relationCategoriePost,
+        private SessionInterface $session
 	)
 	{
         parent::__construct($router,$pdo);
@@ -41,6 +44,13 @@ class AdminModule extends Admin
 
 	public function home(ServerRequestInterface $ServerRequest):string|ResponseInterface
 	{
+
+		$user=$this->session->getSession("userinfo");
+
+        if(!$user)
+        {
+            return (new Response())->withHeader("Location","/login");
+        }
 
         $info=[
 
@@ -64,7 +74,8 @@ class AdminModule extends Admin
 		return $this->render->show("adminViews/adminView",parameter:[ 
                                                                     "posts"=>$posts,
                                                                     "categories_post"=>$categories_post,
-                                                                    "paginateLinks"=>$links
+                                                                    "paginateLinks"=>$links,
+                                                                    
                                                                     ]);
 	}
 

@@ -76,11 +76,6 @@ $tokenInput=$csrf->getCsrfInput();
             </section>
                 <label for="image">Ajout d'image</label>
                 <input type="file" name="image" id="image" >
-            <section>
-                <!-- <?php if(is_array($invalide_fields) ): ?>
-                    <?= $errorMessage->getErrorMessage("slug",$invalide_fields) ?>
-                <?php endif; ?> -->
-            </section>
         </div>
 
         <div>

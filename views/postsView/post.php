@@ -35,7 +35,11 @@ $date=(new DateTime($post->updated_at))->format("Y-m-d H:i");
         <h2><?= $post->name; ?> <em> Posté le <?= $date ; ?></em> </h2>
 
         <div class="content_card" >
-
+            <?php if($post->pic): ?>
+                <section>
+                    <img src="/pic/<?= $post->pic; ?>" alt="barnner">
+                </section>
+            <?php endif ?>
           <p> <?= nl2br($post->content); ?> </p>
 
         </div>

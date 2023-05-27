@@ -50,7 +50,11 @@ $render->show("header",parameter:[
                 </h2>
 
                 <div class="content_card" >
-
+                    <?php if($value->pic): ?>
+                        <section>
+                            <img src="/pic/<?= $value->pic; ?>" alt="barnner">
+                        </section>
+                    <?php endif ?>
                   <p> <?= $value->subStringContent(500) ; ?> </p>
                   <a href="<?= $router->generate("blog_post",[ "id"=>$value->id, "slug"=>$value->slug ]) ?>">Lire la suite &rightarrow;</a>
 

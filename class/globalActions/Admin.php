@@ -2,6 +2,7 @@
 
 namespace Utils\globalActions;
 
+use Interfaces\SessionInterface;
 use Utils\router\Router;
 use \PDO;
 
@@ -18,13 +19,14 @@ class Admin extends GlobaleAction
 
 	public function __construct(
 		protected Router $router,
-        public PDO $pdo
+        public PDO $pdo,
 	)
 	{
 
-        $this->router->map("GET",$this->baseUrl,[$this,"home"],$this->urlName);
+		parent::__construct($pdo);
 
-        parent::__construct($pdo);
+		$this->router->map("GET",$this->baseUrl,[$this,"home"],$this->urlName);
+
 	}
 
 	

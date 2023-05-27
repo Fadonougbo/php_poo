@@ -19,7 +19,6 @@ class App implements RequestHandlerInterface
      * Summary of modulesInstance
      * @var array module list
      */
-    //private array $modulesInstance=[];
     
     private array $middlewareList=[];
 

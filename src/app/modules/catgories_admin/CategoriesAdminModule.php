@@ -2,6 +2,8 @@
 
 namespace App\modules\catgories_admin;
 
+use GuzzleHttp\Psr7\Response;
+use Interfaces\SessionInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Utils\globalActions\Admin;
@@ -29,7 +31,8 @@ class CategoriesAdminModule extends Admin
 		protected Router $router,
         private Render $render,
         public PDO $pdo,
-        protected RequestInterface $serverRequest
+        protected RequestInterface $serverRequest,
+		private SessionInterface $session
 	)
 	{
         parent::__construct($router,$pdo);
@@ -38,6 +41,13 @@ class CategoriesAdminModule extends Admin
 
 	public function home(ServerRequestInterface $ServerRequest):string|ResponseInterface
 	{
+
+		$user=$this->session->getSession("userinfo");
+
+        if(!$user)
+        {
+            return (new Response())->withHeader("Location","/login");
+        }
 
 		$info=[
 
