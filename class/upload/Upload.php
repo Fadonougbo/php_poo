@@ -7,6 +7,8 @@ use Psr\Http\Message\UploadedFileInterface;
 class Upload
 {
 
+	private array $valideFileExtention=["jpg","jpeg","png"];
+
 	public function __construct(
 		
 		private string $dirPath
@@ -27,15 +29,23 @@ class Upload
 		{
 			$filename=$file->getClientFilename();
 
-			if(!is_dir($this->dirPath))
+			$file_extention=pathinfo($filename,PATHINFO_EXTENSION);
+
+			if(in_array($file_extention,$this->valideFileExtention))
 			{
-				mkdir($this->dirPath,0777,true);
+				if(!is_dir($this->dirPath))
+				{
+					mkdir($this->dirPath,0777,true);
+				}
+
+				$target=$this->addSuffix($this->dirPath.DIRECTORY_SEPARATOR.$filename);
+				$file->moveTo($target);
+
+				return pathinfo($target)['basename'];
 			}
 
-			$target=$this->addSuffix($this->dirPath.DIRECTORY_SEPARATOR.$filename);
-			$file->moveTo($target);
+			return false;
 
-			return pathinfo($target)['basename'];
 		}
 
 		return false;

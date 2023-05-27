@@ -15,7 +15,6 @@ $invalide_fields_message=$session->getSessionFlash("invalideForm");
 
 $date=(new DateTime($post->updated_at))->format("Y-m-d H:i");
 
-
 $csrf=new CsrfMiddleware($session);
 
 $tokenInput=$csrf->getCsrfInput();
@@ -63,8 +62,20 @@ $tokenInput=$csrf->getCsrfInput();
         </div>
 
         <div>
-            <label for="image">Ajout d'image</label>
-            <input type="file" name="image" id="image" >
+            <?php if(!empty($post->pic)): ?>
+               <img src="/pic/<?=$post->pic;?>" alt="bannier">
+            <?php endif; ?>
+        </div>
+
+        <div>
+            <section>
+                <?php if(!empty($post->pic)): ?>
+                    <label for="image_visibility">Supprimer l'ancienne image</label>
+                    <input type="checkbox" name="image_visibility" id="image_visibility">
+                <?php endif; ?>
+            </section>
+                <label for="image">Ajout d'image</label>
+                <input type="file" name="image" id="image" >
             <section>
                 <!-- <?php if(is_array($invalide_fields) ): ?>
                     <?= $errorMessage->getErrorMessage("slug",$invalide_fields) ?>

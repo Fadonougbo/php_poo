@@ -3,6 +3,7 @@
 namespace Utils\globalActions;
 
 use \PDO;
+use Psr\Http\Message\ServerRequestInterface;
 use Utils\upload\Upload;
 
 class GlobaleAction
@@ -16,6 +17,20 @@ class GlobaleAction
 
         self::$upload=new Upload(dirname(__DIR__,2).DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR."pic");
 
+	}
+
+    protected function uploadPicInfo(?ServerRequestInterface $ServerRequest=null):bool|string
+	{
+		if(!empty($ServerRequest) && !empty( $ServerRequest->getUploadedFiles() ) )
+		{
+			$file=($ServerRequest->getUploadedFiles())["image"];
+
+			$response=(self::$upload)->moveFile($file);
+
+			return $response?$response:false;
+		}
+		
+		return false;
 	}
 
     public function fetchCurrentElement(string $table,int $id)

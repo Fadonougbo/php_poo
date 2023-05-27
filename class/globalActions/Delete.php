@@ -39,7 +39,6 @@ class Delete
 
 		$paginatePosition=!is_int($pos)?1:$pos;
 
-
 		$post=$this->fetchCurrentPost($this->id);
 
 		if (!$post)
@@ -49,11 +48,15 @@ class Delete
 
 		if ($ServerRequest->getMethod()==="POST")
 		{
-
 				$delete=$this->deleteCurrentPost($post->id);
 
 				if ($delete)
 				{
+					if(isset($post->pic))
+					{
+						$path=dirname(__DIR__,2).DIRECTORY_SEPARATOR."public".DIRECTORY_SEPARATOR.'pic'.DIRECTORY_SEPARATOR.$post->pic;
+						unlink($path);
+					}
 					$this->session->setSession("success","{$this->messageList["success"]}");
 					return (new Response())->withHeader("location","{$this->baseUrl}?p=$paginatePosition");
 				}else 

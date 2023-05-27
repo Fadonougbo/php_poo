@@ -24,7 +24,7 @@ $tokenInput=$csrf->getCsrfInput();
     <div>
         <a href="<?= $router->generate("admin_home") ?>">Admin</a>
     </div>
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data" >
 
         <?php if (!empty($invalide_fields_message)): ?>
 
@@ -61,6 +61,11 @@ $tokenInput=$csrf->getCsrfInput();
                     <?= $errorMessage->getErrorMessage("content",$invalide_fields) ?>
                 <?php endif; ?>
             </section>
+        </div>
+
+        <div>
+            <label for="image">Ajout d'image</label>
+            <input type="file" name="image" id="image" >
         </div>
 
         <div>

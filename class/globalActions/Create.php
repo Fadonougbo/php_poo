@@ -44,7 +44,7 @@ class Create extends GlobaleAction
 
 				if (!is_array($this->validationStatus))
 				{	
-					$this->runCreation($ServerRequest,$parsedBody,$valideCategorieIdList);
+					$this->runCreation($ServerRequest,$valideCategorieIdList);
 
 				}else 
 				{
@@ -68,21 +68,21 @@ class Create extends GlobaleAction
 	/**
 	 * Lance la phase de creation
 	 * @param  ServerRequestInterface $ServerRequest         [description]
-	 * @param  array  $parsedBody            [description]
 	 * @param  array|null $valideCategorieIdList list des id valide pour les categories
 	 * @return void
 	 */
-	private function runCreation($ServerRequest,array $parsedBody,$valideCategorieIdList)
+	private function runCreation(ServerRequestInterface $ServerRequest,$valideCategorieIdList)
 	{
+		$parsedBody=$ServerRequest->getParsedBody();
 		//creation d'element si il n'y a pas de categorie ou si on n'est dans le cas de la creation d'un article 
 		if (empty($valideCategorieIdList) || !isset($parsedBody["categories_lists"]) )
 		{
-			$this->isCreated=$this->createElement($ServerRequest->getParsedBody(),$this->validKeys);
+			$this->isCreated=$this->createElement($parsedBody,$this->validKeys,$ServerRequest);
 
 		}else 
 		{
 			//creation de post avec les categories
-			$this->isCreated=$this->createPostWithCategorie($ServerRequest,$parsedBody["categories_lists"],$valideCategorieIdList);
+			$this->isCreated=$this->createPostWithCategorie($ServerRequest,$valideCategorieIdList);
 		}
 
 
@@ -100,10 +100,14 @@ class Create extends GlobaleAction
 	 * Insert un article|categorie dans la DB
 	 * @param  array  $parsedBody tableau des elements envoyés par l'utilisateur ($_POST)
 	 * @param  array  $validKeys  tableau contenant les champs valides
+	 * @param ServerRequestInterface|null $ServerRequest
 	 * @return [type]             [description]
 	 */
-	public function createElement(array $parsedBody,array $validKeys)
+	public function createElement(array $parsedBody,array $validKeys,?ServerRequestInterface $ServerRequest=null)
 	{
+		/***File info */
+			$imageIsUpload=$this->uploadPicInfo($ServerRequest);
+		/********************** */
 		
 		/**
 		 * Verifie si params possede les clées ["name","slug","content"]
@@ -125,10 +129,21 @@ class Create extends GlobaleAction
 
 			return false;
 		}
-		
+
 		$sqlEchapString=Helper::generateInsertEchapString(array_keys($params_purged));
 
 		$implode_key=implode(",",array_keys($params_purged));
+
+		if($imageIsUpload)
+		{
+			/**
+			 * Ajout de variable pour les images
+			 */
+
+			$sqlEchapString=$sqlEchapString.",:pic";
+			$params_purged['pic']=$imageIsUpload;
+			$implode_key=$implode_key.",pic";
+		}
 
 		$req=$this->pdo->prepare("INSERT INTO  {$this->tableName} ($implode_key) VALUES($sqlEchapString) ");
 
@@ -166,12 +181,13 @@ class Create extends GlobaleAction
 	/**
 	 * Insert post in DB width categories Liaisons
 	 * @param  ServerRequestInterface $ServerRequest 
-	 * @param  array  $categorieIdLIst list des id envoyés par l'utilisateur
 	 * @param  array   $valideCategorieIdList list des id des categories présent dans la DB 
 	 * @return bool
 	 */
-	private function createPostWithCategorie(ServerRequestInterface $ServerRequest,array $categorieIdLIst,array $valideCategorieIdList):bool
+	private function createPostWithCategorie(ServerRequestInterface $ServerRequest,array $valideCategorieIdList):bool
 	{
+		$parsedBody=$ServerRequest->getParsedBody();
+		$categorieIdLIst=$parsedBody["categories_lists"];
 
 		$valideArray=Helper::purgeArray($categorieIdLIst,$valideCategorieIdList);
 
@@ -179,7 +195,7 @@ class Create extends GlobaleAction
 		{
 			$this->pdo->beginTransaction();
 
-				$postCreationStatus=$this->createElement($ServerRequest->getParsedBody(),$this->validKeys);
+				$postCreationStatus=$this->createElement($parsedBody,$this->validKeys,$ServerRequest);
 
 				$lastPostId=(int)$this->pdo->lastInsertId();
 

@@ -9,7 +9,6 @@ use Utils\Helper;
 use Utils\router\Router;
 use Utils\validation\FormValidator;
 use \PDO;
-use Utils\upload\Upload;
 
 class Update extends GlobaleAction
 {
@@ -52,7 +51,7 @@ class Update extends GlobaleAction
 				if (!is_array($this->validationStatus))
 				{
 					
-					$this->runUpdate($post->id,$ServerRequest,$parsedBody,$valideCategorieIdList);
+					$this->runUpdate($post->id,$ServerRequest,$valideCategorieIdList);
 
 					if ($this->isUpdated)
 					{
@@ -80,13 +79,15 @@ class Update extends GlobaleAction
 		return new FormValidator($body);
 	}
 
-	private function runUpdate(int $id,ServerRequestInterface $ServerRequest,$parsedBody,$valideCategorieIdList)
+	private function runUpdate(int $id,ServerRequestInterface $ServerRequest,$valideCategorieIdList)
 	{
+
+		$parsedBody=$ServerRequest->getParsedBody();
 
 		//Cas de modification d'une categorie
 		if(empty($valideCategorieIdList) )
 		{
-			$this->isUpdated=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys);
+			$this->isUpdated=$this->updateElement($id,$parsedBody,$this->valideArrayKeys);
 
 		}else if($valideCategorieIdList && !isset($parsedBody["categories_lists"]))
 		{
@@ -112,12 +113,12 @@ class Update extends GlobaleAction
 			{
 				$this->pdo->beginTransaction();
 
-				$updateElement=$this->updateElement($id,$ServerRequest->getParsedBody(),$this->valideArrayKeys,$ServerRequest);
-				$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$valideArray);
+					$updateElement=$this->updateElement($id,$parsedBody,$this->valideArrayKeys,$ServerRequest);
+					$updateCategorieLiaisons=$this->updateCategorie_article_relation($id,$valideArray);
 
 				$this->pdo->commit();
 
-				$this->isUpdated=$updateCategorieLiaisons&&$updateElement?true:false;
+				$this->isUpdated=($updateCategorieLiaisons&&$updateElement)?true:false;
 
 			}else 
 			{
@@ -139,8 +140,9 @@ class Update extends GlobaleAction
 	 */
 	private function updateElement(int $id,array $parsedBody,array $validArrayKeys,?ServerRequestInterface $ServerRequest=null):bool
 	{
+
 		/***File info */
-		$response=$this->uploadPicInfo($ServerRequest);
+			$imageIsUpload=$this->uploadPicInfo($ServerRequest);
 		/********************** */
 
 
@@ -155,15 +157,33 @@ class Update extends GlobaleAction
 			return false;
 		}
 
-		$sqlEchapString=Helper::generateUpdateEchapString(array_keys($params_purged));
-		/**
-		 * Ajout de variable pour les images
-		 */
-		$sqlEchapString=$sqlEchapString.",pic=:pic";
+		//suppression de la clé de du checkbox pour qu'il n'apparait pas dans le echape string
+		unset($params_purged["image_visibility"]);
 
+		$sqlEchapString=Helper::generateUpdateEchapString(array_keys($params_purged));
+		
 		$params_purged["id"]=(int)$id;
 
-		$params_purged["pic"]=$response?$response:'';
+		//traitement de la requete en cas d'ajout/suppression d'image 
+		if(isset($parsedBody["image_visibility"]) && !$imageIsUpload )
+		{
+			//Cas ou on supprime uniquement une image
+			/**
+			 * Ajout de variable pour les images
+			 */
+			$sqlEchapString=$sqlEchapString.",pic=:pic";
+			$params_purged["pic"]="";
+
+		}else if($imageIsUpload || ($imageIsUpload && isset($parsedBody["image_visibility"])) )
+		{
+			//cas ou on ajoute une image(avec ou sans suppression de l'ancienne image)
+			/**
+			 * Ajout de variable pour les images
+			 */
+			$sqlEchapString=$sqlEchapString.",pic=:pic";
+			$params_purged["pic"]=$imageIsUpload;
+		}
+
 
 		$req=$this->pdo->prepare(" UPDATE {$this->tableName} SET $sqlEchapString WHERE id=:id ");
 
@@ -171,19 +191,6 @@ class Update extends GlobaleAction
 
 	}
 
-	private function uploadPicInfo(ServerRequestInterface $ServerRequest):bool|string
-	{
-		if(!empty($ServerRequest))
-		{
-			$file=($ServerRequest->getUploadedFiles())["image"];
-
-			$response=(parent::$upload)->moveFile($file);
-
-			return $response?$response:false;
-		}
-		
-		return false;
-	}
 
 	/**
 	 * Supprime les anciennes liaison de l'article avec les categories

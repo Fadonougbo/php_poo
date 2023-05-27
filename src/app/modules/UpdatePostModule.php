@@ -29,7 +29,7 @@ class UpdatePostModule extends Update
 
 	protected $validationStatus=null;
 
-	protected array $valideArrayKeys=["name","slug","content","updated_at"];
+	protected array $valideArrayKeys=["name","slug","content","updated_at","image_visibility"];
 
 	protected bool $isUpdated=false;
 
@@ -38,7 +38,8 @@ class UpdatePostModule extends Update
 		"no_update"=>"Article non modifié",
 		"invalideForm"=>"Veillez corriger vos erreurs",
 		"invalideCategorieSelection"=>"Veillez sélectionné une categorie valide",
-		"slugExist"=>"Ce slug exist déja"
+		"slugExist"=>"Ce slug exist déja",
+		"invalideImage"=>"L'image n'est pas valide"
 	];
 
 
@@ -98,9 +99,9 @@ class UpdatePostModule extends Update
 
 		if ($updatePost)
 		{
-			//return (new Response())->withStatus(301)->withHeader("Location","/admin?p=$paginatePosition");
+			return (new Response())->withStatus(301)->withHeader("Location","/admin?p=$paginatePosition");
 		}
-				
+		
 		return $this->render->show("adminViews/posts/updatePostView",parameter:[
 																"post"=>$post,
 																"categories"=>$categories,

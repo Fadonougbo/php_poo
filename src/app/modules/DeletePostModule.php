@@ -2,11 +2,8 @@
 
 namespace App\modules;
 
-use GuzzleHttp\Psr7\Response;
 use Interfaces\SessionInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Utils\Helper;
 use Utils\globalActions\Delete;
 use Utils\render\Render;
 use Utils\router\Router;
