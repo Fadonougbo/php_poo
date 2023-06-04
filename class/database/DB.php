@@ -19,7 +19,7 @@ class DB
 	{
 		if (empty(self::$pdo))
 		{
-			self::$pdo=new PDO("pgsql:host=localhost;dbname=$dbname","root","root",
+			self::$pdo=new PDO("pgsql:host=localhost;dbname=$dbname",$_ENV["DB_USERNAME"],$_ENV["DB_PASSWORD"],
 				[
 					PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_OBJ

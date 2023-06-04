@@ -17,7 +17,7 @@ use Utils\validation\FormErrorMessage;
 return [
     PDO::class=>function(){
 
-        return  DB::getPdoConnection("pooblog");
+        return  DB::getPdoConnection($_ENV["DB_NAME"]);
     },
     Auth::class=>autowire(Authentification::class),
     RequestInterface::class=>function()
