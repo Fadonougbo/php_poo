@@ -1,4 +1,4 @@
 /vendor
 /helper
 /public/blog.php
-/.env
+.env
